@@ -1,27 +1,12 @@
 #!/bin/bash
-#!/bin/bash
-
-# Definir els noms dels fitxers d'entrada i sortida
-fitxer_entrada="superviventsModificat31.csv"
-fitxer_sortida="superviventsModificat4.csv"
-
-# Escriure la capçalera amb les noves columnes Rlikes i Rdislikes al fitxer de sortida
-head -n 1 "$fitxer_entrada" | awk -F',' '{print $0",Rlikes,Rdislikes"}' > "$fitxer_sortida"
-
-# Processar cada línia del fitxer d'entrada (a partir de la segona línia)
-tail -n +2 "$fitxer_entrada" | while read -r linia; do
-    # Extreure les columnes de views (columna 8), likes (columna 9), i dislikes (columna 10)
-    views=$(echo "$linia" | cut -d',' -f8)
-    likes=$(echo "$linia" | cut -d',' -f9)
-    dislikes=$(echo "$linia" | cut -d',' -f10)
-
-  
-    # Calcular Rlikes i Rdislikes amb 2 decimals
-    Rlikes=$(echo "scale=2; ($likes * 100) / $views)" | bc)
-    Rdislikes= $(echo "scale=2; ($dislikes * 100) / $views)" | bc)
-
+tail -n +2 superviventsModificat31.csv | while IFS=',' read -r video_id trending_date title channel_title category_id publish_time tags views likes dislikes comment_count comments_disabled ratings_disabled video_error_or_removed; do
+    
+    # Calcular Rlikes i Rdislikes amb 2 decimals utilitzant bc
+    Rlikes=($likes * 100) / $views
+    Rdislikes=($dislikes * 100) / $views
+    
 
     # Escriure la línia original amb les noves columnes calculades al fitxer de sortida
-    echo "$linia,$Rlikes,$Rdislikes" >> "$fitxer_sortida"
+    echo "$video_id,$trending_date,$title,$channel_title,$category_id,$publish_time,$tags,$views,$likes,$dislikes,$comment_count,$comments_disabled,$ratings_disabled,$video_error_or_removed,$Rlikes,$Rdislikes" >> superviventsModificat4.csv
 done
 
