@@ -24,26 +24,45 @@ awk -F',' '{
 }' OFS=',' "superviventsModificat2.csv" > "superviventsModificat3.csv"
 
 #4
-#!/bin/bash
 # Escriure la capçalera amb les noves columnes Rlikes i Rdislikes
 head -n 1 superviventsModificat31.csv | cut -d',' -f1-14 | awk -F, '{print $0",Rlikes,Rdislikes"}' > superviventsModificat4.csv
 
-echo $tit",Ranking_views,Rlikes,Rdilikes" > superviventsModificat4.csv
- 
+nano relacions.sh
 
-# Processar cada línia del fitxer (a partir de la segona línia)
-tail -n +2 "$superviventsModificat31.csv" | while read -r linia; do
-    # Extreure les columnes necessàries
-    views=$(echo "$linia" | cut -d',' -f8)
-    likes=$(echo "$linia" | cut -d',' -f9)
-    dislikes=$(echo "$linia" | cut -d',' -f10)
+#!/bin/bash
+tail -n +2 superviventsModificat31.csv | while IFS= read -r line; do
 
-    
-    Rlikes=($likes * 100) / $views
-    Rdislikes=($dislikes * 100) / $views
-   
+    # Utilitzar cut per extreure les columnes necessàries
+    video_id=$(echo "$line" | cut -d',' -f1)
+    trending_date=$(echo "$line" | cut -d',' -f2)
+    title=$(echo "$line" | cut -d',' -f3)
+    channel_title=$(echo "$line" | cut -d',' -f4)
+    category_id=$(echo "$line" | cut -d',' -f5)
+    publish_time=$(echo "$line" | cut -d',' -f6)
+    tags=$(echo "$line" | cut -d',' -f7)
+    views=$(echo "$line" | cut -d',' -f8)
+    likes=$(echo "$line" | cut -d',' -f9)
+    dislikes=$(echo "$line" | cut -d',' -f10)
+    comment_count=$(echo "$line" | cut -d',' -f11)
+    comments_disabled=$(echo "$line" | cut -d',' -f12)
+    ratings_disabled=$(echo "$line" | cut -d',' -f13)
+    video_error_or_removed=$(echo "$line" | cut -d',' -f14)
 
-    # Escriure la línia original més les noves columnes al fitxer de sortida
-    echo "$linia,$Rlikes,$Rdislikes" > "$superviventsModificat4.csv"
+    if [ "$views" -lt 1 ]; then
+        Rlikes=0
+        Rdislikes=0
+    else
+        # Calcular Rlikes i Rdislikes
+       Rlikes=$(( (likes * 100) / views ))
+       Rdislikes=$(( (dislikes * 100) / views ))
+    fi
+
+    # Escriure la línia original amb les noves columnes calculades al fitxer de sortida
+    echo "$video_id,$trending_date,$title,$channel_title,$category_id,$publish_time,$tags,$views,$likes,$dislikes,$comment_count,$comments_disabled,$ratings_disabled,$video_error_or_removed,$Rlikes,$Rdislikes" >> superviventsModificat4.csv
+
 done
+
+chmod +x relacions.sh
+./relacions.sh
+
 
