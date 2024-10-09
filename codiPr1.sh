@@ -25,7 +25,7 @@ awk -F',' '{
 
 #4
 # Escriure la capçalera amb les noves columnes Rlikes i Rdislikes
-head -n 1 superviventsModificat31.csv | cut -d',' -f1-14 | awk -F, '{print $0",Rlikes,Rdislikes"}' > superviventsModificat4.csv
+head -n 1 superviventsModificat31.csv | cut -d',' -f1-15 | awk -F, '{print $0",Rlikes,Rdislikes"}' > superviventsModificat4.csv
 
 nano relacions.sh
 
@@ -47,6 +47,7 @@ tail -n +2 superviventsModificat31.csv | while IFS= read -r line; do
     comments_disabled=$(echo "$line" | cut -d',' -f12)
     ratings_disabled=$(echo "$line" | cut -d',' -f13)
     video_error_or_removed=$(echo "$line" | cut -d',' -f14)
+    ranking=$(echo "$line" | cut -d',' -f15)
 
     if [ "$views" -lt 1 ]; then
         Rlikes=0
@@ -58,7 +59,7 @@ tail -n +2 superviventsModificat31.csv | while IFS= read -r line; do
     fi
 
     # Escriure la línia original amb les noves columnes calculades al fitxer de sortida
-    echo "$video_id,$trending_date,$title,$channel_title,$category_id,$publish_time,$tags,$views,$likes,$dislikes,$comment_count,$comments_disabled,$ratings_disabled,$video_error_or_removed,$Rlikes,$Rdislikes" >> superviventsModificat4.csv
+    echo "$video_id,$trending_date,$title,$channel_title,$category_id,$publish_time,$tags,$views,$likes,$dislikes,$comment_count,$comments_disabled,$ratings_disabled,$video_error_or_removed,$ranking,$Rlikes,$Rdislikes" >> superviventsModificat4.csv
 
 done
 
