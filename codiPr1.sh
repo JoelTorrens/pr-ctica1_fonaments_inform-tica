@@ -25,7 +25,7 @@ awk -F',' '{
 
 #4
 # Escriure la capçalera amb les noves columnes Rlikes i Rdislikes
-head -n 1 superviventsModificat31.csv | cut -d',' -f1-15 | awk -F, '{print $0",Rlikes,Rdislikes"}' > superviventsModificat4.csv
+head -n 1 superviventsModificat31.csv | cut -d',' -f1-15git | awk -F, '{print $0",Rlikes,Rdislikes"}' > superviventsModificat4.csv
 
 nano relacions.sh
 
