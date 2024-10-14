@@ -1,7 +1,7 @@
+   #!
+    #!/bin/bash
 
 if [ $# -eq 0 ]; then
-    #!
-    #!/bin/bash
     #1
     cut -d',' -f1-11,13-15 supervivents.csv > superviventsModificat1.csv
     echo "ex 1 complert"
@@ -13,7 +13,8 @@ if [ $# -eq 0 ]; then
     echo "ex 2 complert"
 
     #3
-    awk -F',' '{
+    awk -F',' 'NR==1 {print $0 ",Ranking_Views"; next}
+    {
         # Classificar en funció de la columna 8 (visualitzacions)
         if ($8 <= 1000000)
             ranking="bo";
@@ -29,11 +30,10 @@ if [ $# -eq 0 ]; then
 
     #4
     # Escriure la capçalera amb les noves columnes Rlikes i Rdislikes
-    head -n 1 superviventsModificat31.csv | cut -d',' -f1-15 | awk -F, '{print $0",Rlikes,Rdislikes"}' > superviventsModificat4.csv
+    head -n 1 superviventsModificat3.csv | cut -d',' -f1-15 | awk -F, '{print $0",Rlikes,Rdislikes"}' > superviventsModificat4.csv
     
-
-    #!/bin/bash
-    tail -n +2 superviventsModificat31.csv | while IFS= read -r line; do
+    #Escriure la resta de files
+    tail -n +2 superviventsModificat3.csv | while IFS= read -r line; do
 
     # Utilitzar cut per extreure les columnes necessàries
         views=$(echo "$line" | cut -d',' -f8)
@@ -50,15 +50,16 @@ if [ $# -eq 0 ]; then
         fi
 
         # Escriure la línia original amb les noves columnes calculades al fitxer de sortida
-        echo "$line,$Rlikes,
-        $Rdislikes" >> superviventsModificat4.csv
+        echo "$line,$Rlikes,$Rdislikes" >> superviventsModificat4.csv
 
     done
     echo "ex 4 complert"
     
 
 else
+
     #5
+    #si el fitxer superviventsModificat4 no existeix
     if [ ! -f "superviventsModificat4.csv" ]; then
         echo "ERROR: L'arxiu superviventsModificat4.csv no existeix."
         exit 1
