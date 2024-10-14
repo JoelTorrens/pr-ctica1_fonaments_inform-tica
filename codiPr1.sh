@@ -30,7 +30,7 @@ if [ $# -eq 0 ]; then
             ranking="estrella";
 
         # Imprimir totes les columnes originals i la nova columna 'Ranking_Views'
-        print $0 "," Ranking_Views;
+        print $0 "," ranking;
         
     }' OFS=',' "superviventsModificat2.csv" > "superviventsModificat3.csv"
     #OFS s'utilitza per assegurar que els camps a la sortida estiguin separats per comes, mantenint el format CSV.
