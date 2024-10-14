@@ -3,16 +3,22 @@
 
 if [ $# -eq 0 ]; then
     #1
+    #Executant aquesta ordre, seleccionem les columnes 1 a 11 i 13 a 15, eliminant la 12 (thumbnail_link) i la 16 (description) 
+    #i guardant-ho en un nou fitxer anomenat superviventsModificat1.csv
     cut -d',' -f1-11,13-15 supervivents.csv > superviventsModificat1.csv
     echo "ex 1 complert"
 
     #2
+    #Filtra les línies del fitxer superviventsModificat1.csv on la columna 14 que indica si hi ha un error no és igual a "True". 
+    #Aquestes línies es guarden al nou fitxer superviventsModificat2.csv.
     awk -F',' '$14 != "True"' "superviventsModificat1.csv" > "superviventsModificat2.csv"
+    #Compta el nombre de línies, amb wc -l, on la columna 14 té valor True al document superviventsModificat.1.   
     eliminats=$(awk -F',' '$14 == "True"' "superviventsModificat1.csv" | wc -l)               
     echo "S'han eliminat $eliminats registres amb errors o vídeos esborrats."
     echo "ex 2 complert"
 
     #3
+    #Afegeix la columna "Ranking_Views" a la capçalera del fitxer CSV i després continua processant les altres línies sense modificar-les.
     awk -F',' 'NR==1 {print $0 ",Ranking_Views"; next}
     {
         # Classificar en funció de la columna 8 (visualitzacions)
@@ -24,8 +30,11 @@ if [ $# -eq 0 ]; then
             ranking="estrella";
 
         # Imprimir totes les columnes originals i la nova columna 'Ranking_Views'
-        print $0 "," ranking;
+        print $0 "," Ranking_Views;
+        
     }' OFS=',' "superviventsModificat2.csv" > "superviventsModificat3.csv"
+    #OFS s'utilitza per assegurar que els camps a la sortida estiguin separats per comes, mantenint el format CSV.
+
     echo "ex 3 complert"
 
     #4
@@ -64,7 +73,7 @@ else
         echo "ERROR: L'arxiu superviventsModificat4.csv no existeix."
         exit 1
     else
-
+        #guardem el parametre d'entrada
         parametre=$1
 
         # Buscar coincidències a superviventsModificat4.csv a les columes $1 (video_id) i $3 (title)
